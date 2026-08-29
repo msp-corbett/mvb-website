@@ -1,0 +1,18 @@
+.mvb-repeater td,
+.mvb-repeater th {
+	padding: 0.5em 0.75em;
+	vertical-align: middle;
+}
+.mvb-repeater-handle {
+	cursor: default;
+	color: #a7aaad;
+	text-align: center;
+}
+.mvb-remove-row {
+	color: #b32d2e;
+	font-size: 1.2em;
+	line-height: 1;
+}
+.mvb-remove-row:hover {
+	color: #dc3232;
+}

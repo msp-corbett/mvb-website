@@ -1,0 +1,24 @@
+# WordPress core and everything that isn't this project's own code.
+# Only wp-content/themes/mvb and wp-content/plugins/mvb-core are tracked.
+/wp-admin/
+/wp-includes/
+/*.php
+/wp-content/*
+!/wp-content/themes/
+/wp-content/themes/*
+!/wp-content/themes/mvb/
+!/wp-content/plugins/
+/wp-content/plugins/*
+!/wp-content/plugins/mvb-core/
+
+# Local dev
+.wp-env/
+node_modules/
+vendor/
+.phpunit.result.cache
+.DS_Store
+*.log
+
+# Editors
+.vscode/
+.idea/

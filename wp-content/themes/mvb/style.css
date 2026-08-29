@@ -1,0 +1,15 @@
+/*
+Theme Name: Matakana Village Books
+Theme URI: https://matakanavillagebooks.co.nz
+Author: Matakana Village Books
+Description: Custom theme for Matakana Village Books, a boutique independent bookshop in Matakana Village, NZ. Pairs with the MVB Core plugin (shelf picks, top-ten lists, events).
+Version: 1.0.0
+Requires at least: 6.4
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: LICENSE
+Text Domain: mvb
+
+This file intentionally holds only the required theme header. All visual
+styles are enqueued separately from assets/css/main.css — see functions.php.
+*/
