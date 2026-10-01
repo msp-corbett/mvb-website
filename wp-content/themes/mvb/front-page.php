@@ -27,8 +27,8 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
   <svg class="bird hero-bird" aria-hidden="true"><use href="#bird"/></svg>
   <div class="wrap">
     <p class="eyebrow">Matakana Village · Under the cinema</p>
-    <h1>Somebody read it <i>before</i> you did.</h1>
-    <p class="lede">A small bookshop beside the Farmers Market, where every book on the shelf was put there on purpose — and we can tell you exactly why.</p>
+    <h1>Find it, <i>read it,</i></br>love it.</h1>
+    <p class="lede">A small bookshop beside the Farmers Market, where every book on the shelf was chosen with care.</p>
     <div class="actions">
       <a class="btn btn-solid" href="<?php echo esc_url( home_url( '/bookshelf/' ) ); ?>">See the bookshelf</a>
       <a class="btn" href="<?php echo esc_url( home_url( '/#find' ) ); ?>">Plan a visit</a>
@@ -40,7 +40,7 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
 <section class="band band-paper">
   <div class="wrap">
     <div class="band-head">
-      <h2>From the shelf<span class="sub">Three books, picked out for you</span></h2>
+      <h2>From the shelf<span class="sub"></span></h2>
       <a class="more" href="<?php echo esc_url( home_url( '/bookshelf/' ) ); ?>">The whole shelf →</a>
     </div>
     <div class="shelf" id="home-shelf" aria-live="polite" data-reshuffle-endpoint="picks/random" data-reshuffle-exclude="<?php echo esc_attr( implode( ',', $mvb_pick_ids ) ); ?>">
