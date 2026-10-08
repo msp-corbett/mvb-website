@@ -71,14 +71,44 @@ function mvb_sanitize_list_books_rows( array $raw_rows ): array {
  */
 function mvb_default_shop_details(): array {
 	return array(
-		'address_line1' => '2 Matakana Valley Road',
-		'address_line2' => 'Matakana 0948',
-		'phone'         => '09 423 0315',
-		'email'         => 'books@matakanavillagebooks.co.nz',
-		'hours'         => '9am – 5pm, seven days',
-		'holiday_note'  => 'Closed public holidays',
-		'map_url'       => 'https://maps.google.com/?q=2+Matakana+Valley+Road,+Matakana',
+		'address_line1'  => '2 Matakana Valley Road',
+		'address_line2'  => 'Matakana 0948',
+		'phone'          => '09 423 0315',
+		'email'          => 'books@matakanavillagebooks.co.nz',
+		'hours_weekdays' => '',
+		'hours_saturday' => '',
+		'hours_sunday'   => '',
+		'holiday_note'   => 'Closed',
+		'map_url'        => 'https://maps.google.com/?q=2+Matakana+Valley+Road,+Matakana',
 	);
+}
+
+/**
+ * The opening-hours fields of the shop details as labelled rows, in display
+ * order. A field left blank in Settings → Shop Details is skipped rather
+ * than shown as an empty "Sunday" etc.
+ *
+ * @return array<int, array{label: string, value: string}>
+ */
+function mvb_shop_hours_rows( array $details ): array {
+	$labels = array(
+		'hours_weekdays' => 'Weekdays',
+		'hours_saturday' => 'Saturday',
+		'hours_sunday'   => 'Sunday',
+		'holiday_note'   => 'Public holidays',
+	);
+
+	$rows = array();
+	foreach ( $labels as $key => $label ) {
+		$value = trim( (string) ( $details[ $key ] ?? '' ) );
+		if ( '' !== $value ) {
+			$rows[] = array(
+				'label' => $label,
+				'value' => $value,
+			);
+		}
+	}
+	return $rows;
 }
 
 /**
@@ -102,13 +132,15 @@ function mvb_merge_shop_details( array $saved ): array {
  */
 function mvb_sanitize_shop_details( array $input ): array {
 	return array(
-		'address_line1' => sanitize_text_field( $input['address_line1'] ?? '' ),
-		'address_line2' => sanitize_text_field( $input['address_line2'] ?? '' ),
-		'phone'         => sanitize_text_field( $input['phone'] ?? '' ),
-		'email'         => sanitize_email( $input['email'] ?? '' ),
-		'hours'         => sanitize_text_field( $input['hours'] ?? '' ),
-		'holiday_note'  => sanitize_text_field( $input['holiday_note'] ?? '' ),
-		'map_url'       => esc_url_raw( $input['map_url'] ?? '' ),
+		'address_line1'  => sanitize_text_field( $input['address_line1'] ?? '' ),
+		'address_line2'  => sanitize_text_field( $input['address_line2'] ?? '' ),
+		'phone'          => sanitize_text_field( $input['phone'] ?? '' ),
+		'email'          => sanitize_email( $input['email'] ?? '' ),
+		'hours_weekdays' => sanitize_text_field( $input['hours_weekdays'] ?? '' ),
+		'hours_saturday' => sanitize_text_field( $input['hours_saturday'] ?? '' ),
+		'hours_sunday'   => sanitize_text_field( $input['hours_sunday'] ?? '' ),
+		'holiday_note'   => sanitize_text_field( $input['holiday_note'] ?? '' ),
+		'map_url'        => esc_url_raw( $input['map_url'] ?? '' ),
 	);
 }
 

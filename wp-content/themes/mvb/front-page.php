@@ -109,8 +109,9 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
       ?>
       <p class="intro"><?php echo esc_html( $mvb_find_intro ); ?></p>
       <dl>
-        <div><dt>Open</dt><dd><?php echo esc_html( $mvb_shop['hours'] ); ?></dd></div>
-        <div><dt>Public holidays</dt><dd><?php echo esc_html( $mvb_shop['holiday_note'] ); ?></dd></div>
+        <?php foreach ( mvb_shop_hours_rows( $mvb_shop ) as $mvb_row ) : ?>
+          <div><dt><?php echo esc_html( $mvb_row['label'] ); ?></dt><dd><?php echo esc_html( $mvb_row['value'] ); ?></dd></div>
+        <?php endforeach; ?>
         <div><dt>Address</dt><dd><?php echo esc_html( $mvb_shop['address_line1'] ); ?><br><?php echo esc_html( $mvb_shop['address_line2'] ); ?></dd></div>
         <div><dt>Phone</dt><dd><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $mvb_shop['phone'] ) ); ?>"><?php echo esc_html( $mvb_shop['phone'] ); ?></a></dd></div>
         <div><dt>Email</dt><dd><a href="mailto:<?php echo esc_attr( $mvb_shop['email'] ); ?>"><?php echo esc_html( $mvb_shop['email'] ); ?></a></dd></div>

@@ -52,7 +52,7 @@ thin wrapper. Existing examples of the split:
 |---|---|
 | `mvb_ymd_to_input_date`, `mvb_input_date_to_ymd` | `inc/meta-boxes.php` event save |
 | `mvb_sanitize_list_books_rows` | `mvb_save_list_meta` |
-| `mvb_default_shop_details`, `mvb_merge_shop_details`, `mvb_sanitize_shop_details` | `inc/shop-details-page.php` |
+| `mvb_default_shop_details`, `mvb_merge_shop_details`, `mvb_sanitize_shop_details`, `mvb_shop_hours_rows` | `inc/shop-details-page.php`; header, footer, front page |
 | `mvb_build_pick_payload` | `mvb_format_pick_for_rest` (reads `WP_Post`/meta) |
 | `mvb_document_title`, `mvb_meta_description` | `inc/seo-meta.php` (real query conditionals) |
 

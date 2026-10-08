@@ -58,10 +58,9 @@ $mvb_shop = mvb_get_shop_details();
 
 <div class="status">
   <div class="wrap">
-    <span><span class="dot"></span><?php echo esc_html( $mvb_shop['hours'] ); ?></span>
-    <?php if ( $mvb_shop['holiday_note'] ) : ?>
-      <span><?php echo esc_html( $mvb_shop['holiday_note'] ); ?></span>
-    <?php endif; ?>
+    <?php foreach ( mvb_shop_hours_rows( $mvb_shop ) as $mvb_i => $mvb_row ) : ?>
+      <span><?php if ( 0 === $mvb_i ) : ?><span class="dot"></span><?php endif; ?><?php echo esc_html( $mvb_row['label'] . ' ' . $mvb_row['value'] ); ?></span>
+    <?php endforeach; ?>
     <span class="addr"><a href="<?php echo esc_url( home_url( '/#find' ) ); ?>"><?php echo esc_html( $mvb_shop['address_line1'] ); ?> →</a></span>
   </div>
 </div>

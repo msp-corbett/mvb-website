@@ -79,12 +79,23 @@ function mvb_render_shop_details_page() {
 					<td><input type="email" id="mvb_email" name="<?php echo esc_attr( MVB_SHOP_DETAILS_OPTION ); ?>[email]" class="regular-text" value="<?php echo esc_attr( $d['email'] ); ?>"></td>
 				</tr>
 				<tr>
-					<th><label for="mvb_hours"><?php esc_html_e( 'Opening hours', 'mvb-core' ); ?></label></th>
-					<td><input type="text" id="mvb_hours" name="<?php echo esc_attr( MVB_SHOP_DETAILS_OPTION ); ?>[hours]" class="regular-text" value="<?php echo esc_attr( $d['hours'] ); ?>"></td>
+					<th><label for="mvb_hours_weekdays"><?php esc_html_e( 'Hours — weekdays', 'mvb-core' ); ?></label></th>
+					<td><input type="text" id="mvb_hours_weekdays" name="<?php echo esc_attr( MVB_SHOP_DETAILS_OPTION ); ?>[hours_weekdays]" class="regular-text" value="<?php echo esc_attr( $d['hours_weekdays'] ); ?>"></td>
 				</tr>
 				<tr>
-					<th><label for="mvb_holiday_note"><?php esc_html_e( 'Holiday note', 'mvb-core' ); ?></label></th>
-					<td><input type="text" id="mvb_holiday_note" name="<?php echo esc_attr( MVB_SHOP_DETAILS_OPTION ); ?>[holiday_note]" class="regular-text" value="<?php echo esc_attr( $d['holiday_note'] ); ?>"></td>
+					<th><label for="mvb_hours_saturday"><?php esc_html_e( 'Hours — Saturday', 'mvb-core' ); ?></label></th>
+					<td><input type="text" id="mvb_hours_saturday" name="<?php echo esc_attr( MVB_SHOP_DETAILS_OPTION ); ?>[hours_saturday]" class="regular-text" value="<?php echo esc_attr( $d['hours_saturday'] ); ?>"></td>
+				</tr>
+				<tr>
+					<th><label for="mvb_hours_sunday"><?php esc_html_e( 'Hours — Sunday', 'mvb-core' ); ?></label></th>
+					<td><input type="text" id="mvb_hours_sunday" name="<?php echo esc_attr( MVB_SHOP_DETAILS_OPTION ); ?>[hours_sunday]" class="regular-text" value="<?php echo esc_attr( $d['hours_sunday'] ); ?>"></td>
+				</tr>
+				<tr>
+					<th><label for="mvb_holiday_note"><?php esc_html_e( 'Public holidays', 'mvb-core' ); ?></label></th>
+					<td>
+						<input type="text" id="mvb_holiday_note" name="<?php echo esc_attr( MVB_SHOP_DETAILS_OPTION ); ?>[holiday_note]" class="regular-text" value="<?php echo esc_attr( $d['holiday_note'] ); ?>">
+						<p class="description"><?php esc_html_e( 'Leave any hours field blank to hide that line on the site.', 'mvb-core' ); ?></p>
+					</td>
 				</tr>
 				<tr>
 					<th><label for="mvb_map_url"><?php esc_html_e( 'Map / directions link', 'mvb-core' ); ?></label></th>

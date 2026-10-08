@@ -24,7 +24,11 @@ $mvb_shop = mvb_get_shop_details();
         <li><?php echo esc_html( $mvb_shop['address_line1'] ); ?><br><?php echo esc_html( $mvb_shop['address_line2'] ); ?></li>
         <li><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $mvb_shop['phone'] ) ); ?>"><?php echo esc_html( $mvb_shop['phone'] ); ?></a></li>
         <li><a href="mailto:<?php echo esc_attr( $mvb_shop['email'] ); ?>"><?php echo esc_html( $mvb_shop['email'] ); ?></a></li>
-        <li><?php echo esc_html( $mvb_shop['hours'] ); ?><br><?php echo esc_html( $mvb_shop['holiday_note'] ); ?></li>
+        <li>
+          <?php foreach ( mvb_shop_hours_rows( $mvb_shop ) as $mvb_i => $mvb_row ) : ?>
+            <?php echo $mvb_i ? '<br>' : ''; ?><?php echo esc_html( $mvb_row['label'] . ' ' . $mvb_row['value'] ); ?>
+          <?php endforeach; ?>
+        </li>
       </ul>
     </div>
     <div>
