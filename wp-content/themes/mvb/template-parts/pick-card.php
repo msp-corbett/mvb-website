@@ -1,7 +1,11 @@
 <?php
 /**
  * One "shelf-talker" card. Expects $args['pick'] (a WP_Post of type
- * mvb_pick). Used on both the front page and the Bookshelf page.
+ * mvb_pick or mvb_preorder). Used on the front page, the Bookshelf page,
+ * and the Coming Soon page. A coming-soon book gets the same card plus a
+ * diagonal corner banner with its expected arrival month.
+ *
+ * reshuffle.js builds this same markup client-side — keep the two in step.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,9 +25,15 @@ $mvb_by      = get_post_meta( $mvb_pick->ID, 'picked_by', true );
 $mvb_note    = get_post_meta( $mvb_pick->ID, 'pick_note', true );
 $mvb_buy_url = get_post_meta( $mvb_pick->ID, 'buy_url', true );
 $mvb_cover   = get_the_post_thumbnail_url( $mvb_pick->ID, 'mvb-cover' );
+$mvb_arrival = 'mvb_preorder' === $mvb_pick->post_type
+  ? mvb_arrival_label( (string) get_post_meta( $mvb_pick->ID, 'arrival_month', true ) )
+  : '';
 ?>
-<figure class="talker" data-kind="<?php echo esc_attr( $mvb_kind ); ?>">
+<figure class="talker<?php echo $mvb_arrival ? ' has-ribbon' : ''; ?>" data-kind="<?php echo esc_attr( $mvb_kind ); ?>">
   <svg class="pin" aria-hidden="true"><use href="#bird"/></svg>
+  <?php if ( $mvb_arrival ) : ?>
+    <p class="ribbon"><span><span class="sr">Expected </span><?php echo esc_html( $mvb_arrival ); ?></span></p>
+  <?php endif; ?>
   <p class="kind"><?php echo esc_html( $mvb_kind ); ?></p>
   <div class="cover<?php echo $mvb_cover ? ' has-image' : ''; ?>"<?php echo $mvb_cover ? ' style="background-image:url(' . esc_url( $mvb_cover ) . ')"' : ''; ?>>
     <em><?php echo esc_html( get_the_title( $mvb_pick ) ); ?></em>

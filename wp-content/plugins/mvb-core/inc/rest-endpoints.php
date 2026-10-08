@@ -1,7 +1,8 @@
 <?php
 /**
- * A small REST route behind the homepage's "Show me three more" button —
- * everything else on the site is server-rendered with no JS required.
+ * Two small REST routes behind the homepage's "Show me three more" buttons
+ * (one for shelf picks, one for coming-soon books) — everything else on the
+ * site is server-rendered with no JS required.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -9,6 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function mvb_register_rest_routes() {
+	$args = array(
+		'count'   => array(
+			'sanitize_callback' => 'absint',
+		),
+		'exclude' => array(
+			'sanitize_callback' => 'sanitize_text_field',
+		),
+	);
+
 	register_rest_route(
 		'mvb/v1',
 		'/picks/random',
@@ -16,20 +26,35 @@ function mvb_register_rest_routes() {
 			'methods'             => 'GET',
 			'callback'            => 'mvb_rest_random_picks',
 			'permission_callback' => '__return_true',
-			'args'                => array(
-				'count'   => array(
-					'sanitize_callback' => 'absint',
-				),
-				'exclude' => array(
-					'sanitize_callback' => 'sanitize_text_field',
-				),
-			),
+			'args'                => $args,
+		)
+	);
+	register_rest_route(
+		'mvb/v1',
+		'/preorders/random',
+		array(
+			'methods'             => 'GET',
+			'callback'            => 'mvb_rest_random_preorders',
+			'permission_callback' => '__return_true',
+			'args'                => $args,
 		)
 	);
 }
 add_action( 'rest_api_init', 'mvb_register_rest_routes' );
 
 function mvb_rest_random_picks( WP_REST_Request $request ) {
+	return rest_ensure_response( array_map( 'mvb_format_pick_for_rest', mvb_rest_random_posts( $request, 'mvb_pick' ) ) );
+}
+
+function mvb_rest_random_preorders( WP_REST_Request $request ) {
+	return rest_ensure_response( array_map( 'mvb_format_preorder_for_rest', mvb_rest_random_posts( $request, 'mvb_preorder' ) ) );
+}
+
+/**
+ * $request's count of random published $post_type posts, avoiding the ids
+ * in its exclude list where possible.
+ */
+function mvb_rest_random_posts( WP_REST_Request $request, string $post_type ): array {
 	$count = (int) $request->get_param( 'count' );
 	$count = $count > 0 ? min( 12, $count ) : 3;
 
@@ -37,7 +62,7 @@ function mvb_rest_random_picks( WP_REST_Request $request ) {
 
 	$query = new WP_Query(
 		array(
-			'post_type'      => 'mvb_pick',
+			'post_type'      => $post_type,
 			'post_status'    => 'publish',
 			'posts_per_page' => $count,
 			'orderby'        => 'rand',
@@ -51,7 +76,7 @@ function mvb_rest_random_picks( WP_REST_Request $request ) {
 	if ( count( $query->posts ) < $count ) {
 		$topup = new WP_Query(
 			array(
-				'post_type'      => 'mvb_pick',
+				'post_type'      => $post_type,
 				'post_status'    => 'publish',
 				'posts_per_page' => $count,
 				'orderby'        => 'rand',
@@ -61,7 +86,7 @@ function mvb_rest_random_picks( WP_REST_Request $request ) {
 		$query = $topup;
 	}
 
-	return rest_ensure_response( array_map( 'mvb_format_pick_for_rest', $query->posts ) );
+	return $query->posts;
 }
 
 function mvb_format_pick_for_rest( $post ) {
@@ -82,6 +107,15 @@ function mvb_format_pick_for_rest( $post ) {
 			'note'   => get_post_meta( $post->ID, 'pick_note', true ),
 			'buyUrl' => get_post_meta( $post->ID, 'buy_url', true ),
 			'cover'  => get_the_post_thumbnail_url( $post->ID, 'medium' ) ?: '',
+		)
+	);
+}
+
+function mvb_format_preorder_for_rest( $post ) {
+	return mvb_build_preorder_payload(
+		array_merge(
+			mvb_format_pick_for_rest( $post ),
+			array( 'arrival' => mvb_arrival_label( (string) get_post_meta( $post->ID, 'arrival_month', true ) ) )
 		)
 	);
 }

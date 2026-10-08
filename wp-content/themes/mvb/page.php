@@ -1,7 +1,7 @@
 <?php
 /**
  * Generic page fallback — used for any page that isn't the front page,
- * Bookshelf, or Events (e.g. a Privacy Policy page).
+ * Bookshelf, Coming Soon, or Events (e.g. a Privacy Policy page).
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

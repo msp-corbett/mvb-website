@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: MVB Core
- * Description: Custom post types, taxonomy, meta boxes and REST route behind the Matakana Village Books site (shelf-talker picks, top-ten lists, events, shop details).
+ * Description: Custom post types, taxonomy, meta boxes and REST route behind the Matakana Village Books site (shelf-talker picks, coming-soon pre-orders, top-ten lists, events, shop details).
  * Version: 1.0.0
  * Author: Matakana Village Books
  * Text Domain: mvb-core
@@ -16,6 +16,7 @@ define( 'MVB_CORE_URL', plugin_dir_url( __FILE__ ) );
 
 require_once MVB_CORE_DIR . 'inc/pure-functions.php';
 require_once MVB_CORE_DIR . 'inc/cpt-pick.php';
+require_once MVB_CORE_DIR . 'inc/cpt-preorder.php';
 require_once MVB_CORE_DIR . 'inc/cpt-list.php';
 require_once MVB_CORE_DIR . 'inc/cpt-event.php';
 require_once MVB_CORE_DIR . 'inc/taxonomy-pick-kind.php';
@@ -28,6 +29,7 @@ require_once MVB_CORE_DIR . 'inc/rest-endpoints.php';
  */
 function mvb_core_activate() {
 	mvb_register_pick_cpt();
+	mvb_register_preorder_cpt();
 	mvb_register_list_cpt();
 	mvb_register_event_cpt();
 	mvb_register_pick_kind_taxonomy();

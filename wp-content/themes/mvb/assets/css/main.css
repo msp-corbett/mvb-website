@@ -69,6 +69,12 @@ img,svg{max-width:100%}
 .talker .buy{margin-top:.9rem;font-size:.8rem;font-weight:500;color:var(--olive-deep);text-decoration:none;border-bottom:1px solid rgba(86,91,36,.35);align-self:flex-start;padding-bottom:1px}
 .talker .buy:hover{border-bottom-color:var(--olive-deep)}
 
+/* coming-soon corner banner: a deep-olive sash across the top-right corner,
+   clipped to the card by its own box, with the expected month in brand olive */
+.talker .ribbon{position:absolute;top:0;right:0;width:6.75rem;height:6.75rem;overflow:hidden;pointer-events:none;z-index:1;border-top-right-radius:3px}
+.talker .ribbon > span{position:absolute;top:1.3rem;right:-2.35rem;width:9.5rem;padding:.4rem 0;transform:rotate(45deg);background:var(--olive-deep);color:var(--olive);font-family:var(--ui);font-size:.72rem;font-weight:700;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;text-align:center;box-shadow:0 1px 3px rgba(34,37,26,.3)}
+.talker.has-ribbon .kind{padding-right:3.5rem}
+
 /* --- buttons --- */
 .btn{font-family:var(--ui);font-size:.9rem;font-weight:500;text-decoration:none;padding:.7rem 1.4rem;border-radius:2px;border:1px solid var(--olive-deep);display:inline-block;background:none;cursor:pointer;color:var(--olive-deep);transition:background .15s,color .15s}
 .btn:hover{background:rgba(86,91,36,.09)}

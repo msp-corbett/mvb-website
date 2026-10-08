@@ -43,6 +43,7 @@ $mvb_shop = mvb_get_shop_details();
         ?>
         <ul class="nav">
           <li><a href="<?php echo esc_url( home_url( '/bookshelf/' ) ); ?>">Bookshelf</a></li>
+          <li><a class="hide-sm" href="<?php echo esc_url( home_url( '/coming-soon/' ) ); ?>">Coming soon</a></li>
           <li><a href="<?php echo esc_url( home_url( '/events/' ) ); ?>">Events</a></li>
           <li><a class="hide-sm" href="<?php echo esc_url( home_url( '/#about' ) ); ?>">About</a></li>
           <li><a href="<?php echo esc_url( home_url( '/#find' ) ); ?>">Find us</a></li>

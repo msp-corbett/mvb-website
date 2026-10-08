@@ -22,7 +22,7 @@ $mvb_all_picks = get_posts(
 		'order'          => 'ASC',
 	)
 );
-$mvb_kinds = mvb_get_used_pick_kinds();
+$mvb_kinds = mvb_get_used_pick_kinds( $mvb_all_picks );
 ?>
 
 <section class="pagehead">

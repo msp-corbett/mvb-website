@@ -15,11 +15,12 @@ class SeoMetaTest extends TestCase {
 	private function context( array $overrides = array() ): array {
 		return array_merge(
 			array(
-				'is_front_page' => false,
-				'is_bookshelf'  => false,
-				'is_events'     => false,
-				'site_name'     => 'Matakana Village Books',
-				'page_title'    => '',
+				'is_front_page'  => false,
+				'is_bookshelf'   => false,
+				'is_events'      => false,
+				'is_coming_soon' => false,
+				'site_name'      => 'Matakana Village Books',
+				'page_title'     => '',
 			),
 			$overrides
 		);
@@ -41,6 +42,12 @@ class SeoMetaTest extends TestCase {
 		$title = mvb_document_title( $this->context( array( 'is_events' => true ) ) );
 
 		$this->assertSame( 'Events — Matakana Village Books', $title );
+	}
+
+	public function test_coming_soon_title(): void {
+		$title = mvb_document_title( $this->context( array( 'is_coming_soon' => true ) ) );
+
+		$this->assertSame( 'Coming Soon — Matakana Village Books', $title );
 	}
 
 	public function test_generic_page_title_uses_the_page_s_own_title(): void {
@@ -68,6 +75,12 @@ class SeoMetaTest extends TestCase {
 		$description = mvb_meta_description( $this->context( array( 'is_events' => true ) ) );
 
 		$this->assertStringContainsString( 'book club', $description );
+	}
+
+	public function test_coming_soon_description(): void {
+		$description = mvb_meta_description( $this->context( array( 'is_coming_soon' => true ) ) );
+
+		$this->assertStringContainsString( 'pre-order', $description );
 	}
 
 	public function test_generic_page_falls_back_to_an_excerpt(): void {

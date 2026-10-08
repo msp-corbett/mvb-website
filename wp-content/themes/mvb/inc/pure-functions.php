@@ -11,7 +11,7 @@
  * hand-written copy (matching the site's original design brief); every
  * other page gets a generated "Section — Site Name" title.
  *
- * @param array{is_front_page: bool, is_bookshelf: bool, is_events: bool, site_name: string, page_title: string} $context
+ * @param array{is_front_page: bool, is_bookshelf: bool, is_events: bool, is_coming_soon: bool, site_name: string, page_title: string} $context
  */
 function mvb_document_title( array $context ): string {
 	if ( $context['is_front_page'] ) {
@@ -19,6 +19,9 @@ function mvb_document_title( array $context ): string {
 	}
 	if ( $context['is_bookshelf'] ) {
 		return 'Bookshelf — ' . $context['site_name'];
+	}
+	if ( $context['is_coming_soon'] ) {
+		return 'Coming Soon — ' . $context['site_name'];
 	}
 	if ( $context['is_events'] ) {
 		return 'Events — ' . $context['site_name'];
@@ -30,12 +33,12 @@ function mvb_document_title( array $context ): string {
 }
 
 /**
- * Builds the meta description for a page. The front page and the two
- * data-driven sections (Bookshelf, Events) get fixed, hand-written copy;
+ * Builds the meta description for a page. The front page and the three
+ * data-driven sections (Bookshelf, Coming Soon, Events) get fixed, hand-written copy;
  * any other page falls back to its own excerpt, or no description at all
  * rather than a generic placeholder.
  *
- * @param array{is_front_page: bool, is_bookshelf: bool, is_events: bool, excerpt?: string} $context
+ * @param array{is_front_page: bool, is_bookshelf: bool, is_events: bool, is_coming_soon: bool, excerpt?: string} $context
  */
 function mvb_meta_description( array $context ): string {
 	if ( $context['is_front_page'] ) {
@@ -43,6 +46,9 @@ function mvb_meta_description( array $context ): string {
 	}
 	if ( $context['is_bookshelf'] ) {
 		return 'Every book on the shelf at Matakana Village Books, picked by hand — filter by kind to browse.';
+	}
+	if ( $context['is_coming_soon'] ) {
+		return 'Books on their way to Matakana Village Books, with the month each one is due — pre-order now and we’ll put one aside for you.';
 	}
 	if ( $context['is_events'] ) {
 		return 'Author evenings, the book club, and story time at Matakana Village Books, Matakana.';

@@ -53,18 +53,24 @@ thin wrapper. Existing examples of the split:
 | `mvb_ymd_to_input_date`, `mvb_input_date_to_ymd` | `inc/meta-boxes.php` event save |
 | `mvb_sanitize_list_books_rows` | `mvb_save_list_meta` |
 | `mvb_default_shop_details`, `mvb_merge_shop_details`, `mvb_sanitize_shop_details`, `mvb_shop_hours_rows` | `inc/shop-details-page.php`; header, footer, front page |
-| `mvb_build_pick_payload` | `mvb_format_pick_for_rest` (reads `WP_Post`/meta) |
+| `mvb_build_pick_payload`, `mvb_build_preorder_payload` | `mvb_format_pick_for_rest`, `mvb_format_preorder_for_rest` (read `WP_Post`/meta) |
+| `mvb_ym_to_input_month`, `mvb_input_month_to_ym`, `mvb_arrival_label` | `inc/meta-boxes.php` preorder save, `template-parts/pick-card.php` |
 | `mvb_document_title`, `mvb_meta_description` | `inc/seo-meta.php` (real query conditionals) |
 
 Tests extend `MVB\Tests\Unit\TestCase`, which handles Brain Monkey setup/teardown.
 
 ## Content model
 
-Three CPTs registered in `mvb-core`, all edited from wp-admin with hand-built
+Four CPTs registered in `mvb-core`, all edited from wp-admin with hand-built
 native meta boxes (no ACF):
 
 - `mvb_pick` — a shelf-talker. Meta: `book_author`, `picked_by`, `pick_note`,
   `buy_url`; cover = featured image; categorised by the `pick_kind` taxonomy.
+- `mvb_preorder` — a "Coming soon" book. Same meta keys as `mvb_pick` (the
+  meta box reuses `mvb_render_pick_field_rows` / `mvb_save_pick_fields`)
+  plus `arrival_month`; shares the `pick_kind` taxonomy. Rendered with the
+  same `pick-card` template, which adds a diagonal corner banner ("Mar 2027")
+  for this post type. Doesn't expire on its own — staff unpublish it.
 - `mvb_list` — a top-ten list. Meta: `list_subtitle`, plus `list_books`, a
   serialized array of `{title, author, url}` rows saved by a hand-rolled
   repeater (`assets/admin-repeater.js` clones a `<template>` row, renumbering
@@ -83,23 +89,32 @@ Shop hours/address/phone/email/map live in one option, `mvb_shop_details`
 - **The "top up" rule for random picks**: when excluding already-shown picks
   would return fewer than requested (small catalog), re-query the full set
   rather than showing fewer. This rule is implemented *twice* —
-  `mvb_get_random_picks()` in the theme and `mvb_rest_random_picks()` in the
-  plugin. Change one, change the other.
+  `mvb_get_random_picks()` in the theme and `mvb_rest_random_posts()` in the
+  plugin (both take a post type, serving picks and preorders). Change one,
+  change the other.
+- **`arrival_month` is stored as `Ym`** (e.g. `202703`), the month-only
+  sibling of `event_date`; `<input type="month">` needs `Y-m`.
+- **Because `pick_kind` is shared**, `mvb_get_used_pick_kinds( $posts )` is
+  scoped to the posts on the page, so a kind used only by preorders doesn't
+  show as an empty filter on the Bookshelf (and vice versa).
 
 ## Front end
 
 Everything is server-rendered; the two JS files are progressive enhancements
 that guard-clause out on pages lacking their markup.
 
-- `assets/js/reshuffle.js` → `GET /wp-json/mvb/v1/picks/random?count=&exclude=`
-  (the only REST route), the homepage "show me three more" button. REST root
-  and nonce reach it via `wp_localize_script` as `MVB_REST`.
+- `assets/js/reshuffle.js` → `GET /wp-json/mvb/v1/{picks,preorders}/random?count=&exclude=`
+  (the only REST routes), the homepage "show me three more" buttons. Each
+  `[data-reshuffle]` button drives the shelf it `aria-controls`; the shelf's
+  `data-reshuffle-endpoint` picks the route. Its `cardMarkup()` mirrors
+  `template-parts/pick-card.php` — keep them in step. REST root and nonce
+  reach it via `wp_localize_script` as `MVB_REST`.
 - `assets/js/filter.js` → Bookshelf filter bar; the full grid is already
   rendered with `data-kind` per card, so it only toggles `hidden`.
 
 Page templates are assigned in wp-admin via Page Attributes:
-`templates/page-bookshelf.php` ("Bookshelf") and `templates/page-events.php`
-("Events"). `inc/seo-meta.php` detects those pages with `is_page_template()`,
+`templates/page-bookshelf.php` ("Bookshelf"), `templates/page-coming-soon.php`
+("Coming Soon", slug `coming-soon`) and `templates/page-events.php` ("Events"). `inc/seo-meta.php` detects those pages with `is_page_template()`,
 so renaming a template file changes the title/description behaviour — update
 `mvb_seo_context()` too.
 

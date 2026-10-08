@@ -1,7 +1,8 @@
 <?php
 /**
  * "Kind" taxonomy for shelf-talker picks (Fiction, Aotearoa, Cooking, …),
- * used to drive the Bookshelf filter bar.
+ * used to drive the Bookshelf and Coming Soon filter bars. Shared by
+ * mvb_pick and mvb_preorder so both are filed under the same kinds.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -11,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function mvb_register_pick_kind_taxonomy() {
 	register_taxonomy(
 		'pick_kind',
-		'mvb_pick',
+		array( 'mvb_pick', 'mvb_preorder' ),
 		array(
 			'labels'            => array(
 				'name'          => __( 'Kinds', 'mvb-core' ),

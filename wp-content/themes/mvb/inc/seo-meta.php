@@ -22,12 +22,13 @@ function mvb_seo_context(): array {
 	}
 
 	return array(
-		'is_front_page' => is_front_page(),
-		'is_bookshelf'  => is_page_template( 'templates/page-bookshelf.php' ),
-		'is_events'     => is_page_template( 'templates/page-events.php' ),
-		'site_name'     => get_bloginfo( 'name' ),
-		'page_title'    => $page_title,
-		'excerpt'       => $excerpt,
+		'is_front_page'  => is_front_page(),
+		'is_bookshelf'   => is_page_template( 'templates/page-bookshelf.php' ),
+		'is_events'      => is_page_template( 'templates/page-events.php' ),
+		'is_coming_soon' => is_page_template( 'templates/page-coming-soon.php' ),
+		'site_name'      => get_bloginfo( 'name' ),
+		'page_title'     => $page_title,
+		'excerpt'        => $excerpt,
 	);
 }
 

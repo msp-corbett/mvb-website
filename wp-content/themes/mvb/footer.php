@@ -35,6 +35,7 @@ $mvb_shop = mvb_get_shop_details();
       <h4><?php esc_html_e( 'Browse', 'mvb' ); ?></h4>
       <ul>
         <li><a href="<?php echo esc_url( home_url( '/bookshelf/' ) ); ?>"><?php esc_html_e( 'The bookshelf', 'mvb' ); ?></a></li>
+        <li><a href="<?php echo esc_url( home_url( '/coming-soon/' ) ); ?>"><?php esc_html_e( 'Coming soon', 'mvb' ); ?></a></li>
         <li><a href="<?php echo esc_url( home_url( '/events/' ) ); ?>"><?php esc_html_e( 'Events', 'mvb' ); ?></a></li>
         <li><a href="https://shop.matakanavillagebooks.co.nz"><?php esc_html_e( 'Online shop', 'mvb' ); ?></a></li>
       </ul>

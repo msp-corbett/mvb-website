@@ -1,6 +1,6 @@
 <?php
 /**
- * Native (no-plugin) meta boxes for picks, events, and lists — including a
+ * Native (no-plugin) meta boxes for picks, coming-soon books, events, and lists — including a
  * hand-built repeater for a list's books, in place of ACF/Meta Box.
  */
 
@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function mvb_add_meta_boxes() {
 	add_meta_box( 'mvb_pick_details', __( 'Pick details', 'mvb-core' ), 'mvb_render_pick_meta_box', 'mvb_pick', 'normal', 'high' );
+	add_meta_box( 'mvb_preorder_details', __( 'Coming soon details', 'mvb-core' ), 'mvb_render_preorder_meta_box', 'mvb_preorder', 'normal', 'high' );
 	add_meta_box( 'mvb_event_details', __( 'Event details', 'mvb-core' ), 'mvb_render_event_meta_box', 'mvb_event', 'normal', 'high' );
 	add_meta_box( 'mvb_list_details', __( 'List details', 'mvb-core' ), 'mvb_render_list_meta_box', 'mvb_list', 'normal', 'high' );
 }
@@ -25,13 +26,24 @@ add_action( 'add_meta_boxes', 'mvb_add_meta_boxes' );
 
 function mvb_render_pick_meta_box( $post ) {
 	wp_nonce_field( 'mvb_save_pick', 'mvb_pick_nonce' );
+	?>
+	<table class="form-table" role="presentation">
+		<?php mvb_render_pick_field_rows( $post ); ?>
+	</table>
+	<p class="description"><?php esc_html_e( 'Set the cover image using the Featured Image panel. Use the Kinds panel to file this pick under a category (Fiction, Aotearoa, Cooking, …).', 'mvb-core' ); ?></p>
+	<?php
+}
 
+/**
+ * The author / picked by / note / buy link rows shared by the pick and
+ * coming-soon meta boxes (both post types use the same meta keys).
+ */
+function mvb_render_pick_field_rows( $post ) {
 	$author  = get_post_meta( $post->ID, 'book_author', true );
 	$by      = get_post_meta( $post->ID, 'picked_by', true );
 	$note    = get_post_meta( $post->ID, 'pick_note', true );
 	$buy_url = get_post_meta( $post->ID, 'buy_url', true );
 	?>
-	<table class="form-table" role="presentation">
 		<tr>
 			<th><label for="mvb_book_author"><?php esc_html_e( 'Author', 'mvb-core' ); ?></label></th>
 			<td><input type="text" id="mvb_book_author" name="mvb_book_author" class="large-text" value="<?php echo esc_attr( $author ); ?>"></td>
@@ -57,8 +69,6 @@ function mvb_render_pick_meta_box( $post ) {
 				<p class="description"><?php esc_html_e( 'Link to this title on the online shop.', 'mvb-core' ); ?></p>
 			</td>
 		</tr>
-	</table>
-	<p class="description"><?php esc_html_e( 'Set the cover image using the Featured Image panel. Use the Kinds panel to file this pick under a category (Fiction, Aotearoa, Cooking, …).', 'mvb-core' ); ?></p>
 	<?php
 }
 
@@ -73,6 +83,15 @@ function mvb_save_pick_meta( $post_id ) {
 		return;
 	}
 
+	mvb_save_pick_fields( $post_id );
+}
+add_action( 'save_post_mvb_pick', 'mvb_save_pick_meta' );
+
+/**
+ * Saves the fields rendered by mvb_render_pick_field_rows(). Callers check
+ * the nonce, autosave, and capability first.
+ */
+function mvb_save_pick_fields( $post_id ) {
 	if ( isset( $_POST['mvb_book_author'] ) ) {
 		update_post_meta( $post_id, 'book_author', sanitize_text_field( wp_unslash( $_POST['mvb_book_author'] ) ) );
 	}
@@ -86,7 +105,54 @@ function mvb_save_pick_meta( $post_id ) {
 		update_post_meta( $post_id, 'buy_url', esc_url_raw( wp_unslash( $_POST['mvb_buy_url'] ) ) );
 	}
 }
-add_action( 'save_post_mvb_pick', 'mvb_save_pick_meta' );
+
+/* -----------------------------------------------------------------------
+ * Coming soon meta box: the pick fields, plus expected arrival month
+ * --------------------------------------------------------------------- */
+
+function mvb_render_preorder_meta_box( $post ) {
+	wp_nonce_field( 'mvb_save_preorder', 'mvb_preorder_nonce' );
+
+	$arrival     = get_post_meta( $post->ID, 'arrival_month', true );
+	$month_value = $arrival ? mvb_ym_to_input_month( $arrival ) : '';
+	?>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th><label for="mvb_arrival_month"><?php esc_html_e( 'Expected', 'mvb-core' ); ?></label></th>
+			<td>
+				<input type="month" id="mvb_arrival_month" name="mvb_arrival_month" value="<?php echo esc_attr( $month_value ); ?>" placeholder="YYYY-MM" pattern="\d{4}-\d{2}" required>
+				<p class="description"><?php esc_html_e( 'The month this book is due in the shop — shown on the card’s corner banner, e.g. “Mar 2027”.', 'mvb-core' ); ?></p>
+			</td>
+		</tr>
+		<?php mvb_render_pick_field_rows( $post ); ?>
+	</table>
+	<p class="description"><?php esc_html_e( 'Set the cover image using the Featured Image panel. Use the Kinds panel to file this book under a category (Fiction, Aotearoa, Cooking, …). Once it’s arrived, move it to Shelf Picks or unpublish it — it won’t drop off on its own.', 'mvb-core' ); ?></p>
+	<?php
+}
+
+// mvb_ym_to_input_month() / mvb_input_month_to_ym() are pure logic,
+// defined (and unit-tested) in inc/pure-functions.php.
+
+function mvb_save_preorder_meta( $post_id ) {
+	if ( ! isset( $_POST['mvb_preorder_nonce'] ) || ! wp_verify_nonce( $_POST['mvb_preorder_nonce'], 'mvb_save_preorder' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	if ( isset( $_POST['mvb_arrival_month'] ) ) {
+		$ym = mvb_input_month_to_ym( sanitize_text_field( wp_unslash( $_POST['mvb_arrival_month'] ) ) );
+		if ( null !== $ym ) {
+			update_post_meta( $post_id, 'arrival_month', $ym );
+		}
+	}
+	mvb_save_pick_fields( $post_id );
+}
+add_action( 'save_post_mvb_preorder', 'mvb_save_preorder_meta' );
 
 /* -----------------------------------------------------------------------
  * Event meta box: date, time, cost

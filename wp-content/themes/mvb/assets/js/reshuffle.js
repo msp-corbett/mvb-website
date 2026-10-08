@@ -1,49 +1,59 @@
-/* "Show me three more" on the homepage's "From the shelf" band. The three
- * cards shown on page load are already server-rendered — this only wires
- * up the button, and does nothing if that button isn't on the page. */
+/* "Show me three more" on the homepage's "From the shelf" and "Coming
+ * soon" bands. The cards shown on page load are already server-rendered —
+ * this only wires up each [data-reshuffle] button to the shelf it
+ * aria-controls, and does nothing if no such button is on the page.
+ *
+ * cardMarkup() mirrors template-parts/pick-card.php — keep the two in step. */
 (function () {
 	'use strict';
 
 	document.addEventListener('DOMContentLoaded', function () {
-		var shelf = document.getElementById('home-shelf');
-		var button = document.getElementById('reshuffle');
-		if (!shelf || !button || typeof window.MVB_REST === 'undefined') return;
+		if (typeof window.MVB_REST === 'undefined') return;
 
-		function cardMarkup(pick) {
-			var kindLabel = pick.kind || '';
-			var coverStyle = pick.cover
-				? ' style="background-image:url(' + cssUrl(pick.cover) + ')"'
-				: '';
-			var article = document.createElement('figure');
-			article.className = 'talker';
-			article.dataset.kind = kindLabel;
+		[].forEach.call(document.querySelectorAll('[data-reshuffle]'), function (button) {
+			var shelf = document.getElementById(button.getAttribute('aria-controls'));
+			if (shelf) wire(shelf, button);
+		});
+	});
 
-			article.innerHTML =
-				'<svg class="pin" aria-hidden="true"><use href="#bird"/></svg>' +
-				'<p class="kind"></p>' +
-				'<div class="cover' + (pick.cover ? ' has-image' : '') + '"' + coverStyle + '>' +
-				'<em></em><small></small></div>' +
-				(pick.note ? '<blockquote class="note"></blockquote>' : '') +
-				(pick.by ? '<figcaption class="sig"></figcaption>' : '') +
-				(pick.buyUrl ? '<a class="buy">Buy this online →</a>' : '');
+	function cardMarkup(pick) {
+		var kindLabel = pick.kind || '';
+		var coverStyle = pick.cover
+			? ' style="background-image:url(' + cssUrl(pick.cover) + ')"'
+			: '';
+		var article = document.createElement('figure');
+		article.className = 'talker' + (pick.arrival ? ' has-ribbon' : '');
+		article.dataset.kind = kindLabel;
 
-			// Text content is set via textContent (never innerHTML) for
-			// every field that comes from the API response.
-			article.querySelector('.kind').textContent = kindLabel;
-			article.querySelector('.cover em').textContent = pick.title || '';
-			article.querySelector('.cover small').textContent = pick.author || '';
-			if (pick.note) article.querySelector('.note').textContent = pick.note;
-			if (pick.by) article.querySelector('.sig').textContent = pick.by;
-			if (pick.buyUrl) article.querySelector('.buy').setAttribute('href', pick.buyUrl);
+		article.innerHTML =
+			'<svg class="pin" aria-hidden="true"><use href="#bird"/></svg>' +
+			(pick.arrival ? '<p class="ribbon"><span><span class="sr">Expected </span><span class="when"></span></span></p>' : '') +
+			'<p class="kind"></p>' +
+			'<div class="cover' + (pick.cover ? ' has-image' : '') + '"' + coverStyle + '>' +
+			'<em></em><small></small></div>' +
+			(pick.note ? '<blockquote class="note"></blockquote>' : '') +
+			(pick.by ? '<figcaption class="sig"></figcaption>' : '') +
+			(pick.buyUrl ? '<a class="buy">Buy this online →</a>' : '');
 
-			return article;
-		}
+		// Text content is set via textContent (never innerHTML) for
+		// every field that comes from the API response.
+		if (pick.arrival) article.querySelector('.ribbon .when').textContent = pick.arrival;
+		article.querySelector('.kind').textContent = kindLabel;
+		article.querySelector('.cover em').textContent = pick.title || '';
+		article.querySelector('.cover small').textContent = pick.author || '';
+		if (pick.note) article.querySelector('.note').textContent = pick.note;
+		if (pick.by) article.querySelector('.sig').textContent = pick.by;
+		if (pick.buyUrl) article.querySelector('.buy').setAttribute('href', pick.buyUrl);
 
-		// CSS url(...) needs its own escaping, distinct from HTML escaping.
-		function cssUrl(url) {
-			return "'" + String(url).replace(/['\\]/g, '\\$&') + "'";
-		}
+		return article;
+	}
 
+	// CSS url(...) needs its own escaping, distinct from HTML escaping.
+	function cssUrl(url) {
+		return "'" + String(url).replace(/['\\]/g, '\\$&') + "'";
+	}
+
+	function wire(shelf, button) {
 		button.addEventListener('click', function () {
 			button.disabled = true;
 			var exclude = shelf.dataset.reshuffleExclude || '';
@@ -71,5 +81,5 @@
 					button.disabled = false;
 				});
 		});
-	});
+	}
 })();

@@ -35,6 +35,52 @@ function mvb_input_date_to_ymd( string $input_date ): ?string {
 }
 
 /**
+ * A coming-soon book's expected arrival is stored as Ym (e.g. 202703) — the
+ * month-only sibling of event_date's Ymd — so it sorts as a string;
+ * HTML month inputs need Y-m.
+ */
+function mvb_ym_to_input_month( string $ym ): string {
+	if ( ! preg_match( '/^\d{6}$/', $ym ) ) {
+		return '';
+	}
+	return substr( $ym, 0, 4 ) . '-' . substr( $ym, 4, 2 );
+}
+
+/**
+ * The reverse of mvb_ym_to_input_month(), for saving the admin form's
+ * <input type="month"> value. Browsers without a month picker fall back to
+ * a plain text box, hence the trim and the 01–12 check.
+ */
+function mvb_input_month_to_ym( string $input_month ): ?string {
+	if ( ! preg_match( '/^(\d{4})-(\d{2})$/', trim( $input_month ), $m ) ) {
+		return null;
+	}
+	$month = (int) $m[2];
+	if ( $month < 1 || $month > 12 ) {
+		return null;
+	}
+	return $m[1] . $m[2];
+}
+
+/**
+ * The corner-banner text for a coming-soon card: "202703" → "Mar 2027".
+ * Empty for anything that isn't a valid Ym, so the card simply shows no
+ * banner rather than a broken one.
+ */
+function mvb_arrival_label( string $ym ): string {
+	$months = array( 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' );
+
+	if ( ! preg_match( '/^(\d{4})(\d{2})$/', $ym, $m ) ) {
+		return '';
+	}
+	$month = (int) $m[2];
+	if ( $month < 1 || $month > 12 ) {
+		return '';
+	}
+	return $months[ $month - 1 ] . ' ' . $m[1];
+}
+
+/**
  * Turns the "books in this list" repeater's raw $_POST rows into a clean
  * array ready for update_post_meta(): each field sanitized, and rows that
  * are entirely blank (e.g. a spare row left empty) dropped, re-indexed
@@ -162,5 +208,19 @@ function mvb_build_pick_payload( array $fields ): array {
 		'note'   => (string) ( $fields['note'] ?? '' ),
 		'buyUrl' => (string) ( $fields['buyUrl'] ?? '' ),
 		'cover'  => (string) ( $fields['cover'] ?? '' ),
+	);
+}
+
+/**
+ * The coming-soon counterpart of mvb_build_pick_payload(), for
+ * /wp-json/mvb/v1/preorders/random: the same card fields, plus the
+ * already-formatted arrival label (see mvb_arrival_label()).
+ *
+ * @param array<string, mixed> $fields
+ */
+function mvb_build_preorder_payload( array $fields ): array {
+	return array_merge(
+		mvb_build_pick_payload( $fields ),
+		array( 'arrival' => (string) ( $fields['arrival'] ?? '' ) )
 	);
 }

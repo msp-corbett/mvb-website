@@ -1,6 +1,7 @@
 <?php
 /**
- * Homepage: hero, "from the shelf" (3 random picks + reshuffle), "top
+ * Homepage: hero, "from the shelf" (3 random picks + reshuffle), "coming
+ * soon" (3 random pre-orders + reshuffle, hidden entirely if none), "top
  * ten" (one random list), "what's on" (up to 3 upcoming events, hidden
  * entirely if none), "the shop" about copy, and "finding us".
  *
@@ -19,6 +20,8 @@ get_header();
 $mvb_shop           = mvb_get_shop_details();
 $mvb_picks          = mvb_get_random_picks( 3 );
 $mvb_pick_ids       = wp_list_pluck( $mvb_picks, 'ID' );
+$mvb_preorders      = mvb_get_random_picks( 3, array(), 'mvb_preorder' );
+$mvb_preorder_ids   = wp_list_pluck( $mvb_preorders, 'ID' );
 $mvb_list           = mvb_get_random_list();
 $mvb_upcoming       = mvb_get_upcoming_events( 3 );
 ?>
@@ -49,7 +52,26 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
       <?php endforeach; ?>
     </div>
     <div class="actions">
-      <button class="btn" id="reshuffle" type="button">Show me three more</button>
+      <button class="btn" type="button" data-reshuffle aria-controls="home-shelf">Show me three more</button>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
+<?php if ( $mvb_preorders ) : ?>
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <h2>Coming soon<span class="sub"></span></h2>
+      <a class="more" href="<?php echo esc_url( home_url( '/coming-soon/' ) ); ?>">Everything on its way →</a>
+    </div>
+    <div class="shelf" id="home-preorders" aria-live="polite" data-reshuffle-endpoint="preorders/random" data-reshuffle-exclude="<?php echo esc_attr( implode( ',', $mvb_preorder_ids ) ); ?>">
+      <?php foreach ( $mvb_preorders as $mvb_preorder ) : ?>
+        <?php get_template_part( 'template-parts/pick-card', null, array( 'pick' => $mvb_preorder ) ); ?>
+      <?php endforeach; ?>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button" data-reshuffle aria-controls="home-preorders">Show me three more</button>
     </div>
   </div>
 </section>
