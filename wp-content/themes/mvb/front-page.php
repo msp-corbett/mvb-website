@@ -35,6 +35,7 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
     <div class="actions">
       <a class="btn btn-solid" href="<?php echo esc_url( home_url( '/bookshelf/' ) ); ?>">See the bookshelf</a>
       <a class="btn" href="<?php echo esc_url( home_url( '/#find' ) ); ?>">Plan a visit</a>
+      <a class="btn" href="https://shop.matakanavillagebooks.co.nz">Online shop</a>
     </div>
   </div>
 </section>
