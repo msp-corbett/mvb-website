@@ -22,7 +22,16 @@ $mvb_shop     = mvb_get_shop_details();
   <div class="wrap">
     <p class="eyebrow">Events</p>
     <h1>Things that happen <i>in the room</i>.</h1>
-    <p>Author evenings, the book club, and story time on market mornings. The shop holds about thirty people at a squeeze, so it's worth telling us you're coming.</p>
+    <?php
+    // Staff can reword this intro from the page's own content box in
+    // wp-admin; the copy below shows while that box is left empty.
+    the_post();
+    if ( mvb_has_visible_text( get_the_content() ) ) :
+      the_content();
+    else :
+      ?>
+      <p>Author evenings, the book club, and story time on market mornings. The shop holds about thirty people at a squeeze, so it's worth telling us you're coming.</p>
+    <?php endif; ?>
   </div>
 </section>
 

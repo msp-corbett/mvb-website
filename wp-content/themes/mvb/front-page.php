@@ -110,9 +110,8 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
       if ( have_posts() ) {
         while ( have_posts() ) {
           the_post();
-          // Fall back to stock copy until the Home page has words of its own
-          // (an empty block editor still leaves empty <p> markup behind).
-          if ( '' !== trim( wp_strip_all_tags( get_the_content() ) ) ) {
+          // Stock copy shows until the Home page has words of its own.
+          if ( mvb_has_visible_text( get_the_content() ) ) {
             the_content();
           } else {
             ?>

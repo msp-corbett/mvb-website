@@ -55,3 +55,14 @@ function mvb_meta_description( array $context ): string {
 	}
 	return $context['excerpt'] ?? '';
 }
+
+/**
+ * Whether a page's saved content has any words in it. An emptied block
+ * editor still leaves markup behind (block comments, an empty <p>, a
+ * stray &nbsp;), so a plain '' check isn't enough — templates use this to
+ * decide between the page's own copy and their built-in fallback.
+ */
+function mvb_has_visible_text( string $html ): bool {
+	$text = html_entity_decode( strip_tags( $html ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	return '' !== trim( $text, " \t\n\r\0\x0B\u{00A0}" );
+}
