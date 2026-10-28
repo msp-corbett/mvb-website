@@ -35,6 +35,7 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
     <div class="actions">
       <a class="btn btn-solid" href="<?php echo esc_url( home_url( '/bookshelf/' ) ); ?>">See the bookshelf</a>
       <a class="btn" href="<?php echo esc_url( home_url( '/#find' ) ); ?>">Plan a visit</a>
+      <a class="btn" href="https://shop.matakanavillagebooks.co.nz">Online shop</a>
     </div>
   </div>
 </section>
@@ -109,13 +110,27 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
       if ( have_posts() ) {
         while ( have_posts() ) {
           the_post();
-          the_content();
+          // Stock copy shows until the Home page has words of its own.
+          if ( mvb_has_visible_text( get_the_content() ) ) {
+            the_content();
+          } else {
+            ?>
+            <p>We're a small independent bookshop in the middle of Matakana Village, under the cinemas and a two-minute walk from the Farmers Market. Every staff pick on the shelf has a card under it, in someone's handwriting, saying why it's there.</p>
+            <p>Can't make it in? The online shop carries the same stock and posts nationwide.</p>
+            <?php
+          }
         }
       }
       ?>
+      <div class="actions">
+        <a class="btn btn-solid" href="https://shop.matakanavillagebooks.co.nz">Shop online →</a>
+      </div>
     </div>
     <div>
       <p class="pull">We can't stock everything, so we stock the good ones. If we haven't got it, we'll order it in and ring you when it lands.</p>
+      <?php if ( $mvb_shop['phone'] ) : ?>
+        <p class="pull-cta"><a class="more" href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $mvb_shop['phone'] ) ); ?>">Ask us to order one in →</a></p>
+      <?php endif; ?>
     </div>
   </div>
 </section>

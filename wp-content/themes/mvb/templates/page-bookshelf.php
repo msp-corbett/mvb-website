@@ -29,7 +29,16 @@ $mvb_kinds = mvb_get_used_pick_kinds( $mvb_all_picks );
   <div class="wrap">
     <p class="eyebrow">The bookshelf</p>
     <h1>Everything here is here <i>on purpose</i>.</h1>
-    <p>These are the books we've pressed into people's hands across the counter. Each one has a card under it in the shop, in someone's handwriting. This is the same thing, typed.</p>
+    <?php
+    // Staff can reword this intro from the page's own content box in
+    // wp-admin; the copy below shows while that box is left empty.
+    the_post();
+    if ( mvb_has_visible_text( get_the_content() ) ) :
+      the_content();
+    else :
+      ?>
+      <p>These are the books we've pressed into people's hands across the counter. Each one has a card under it in the shop, in someone's handwriting. This is the same thing, typed.</p>
+    <?php endif; ?>
   </div>
 </section>
 

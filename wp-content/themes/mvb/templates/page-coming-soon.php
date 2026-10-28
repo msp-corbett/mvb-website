@@ -22,7 +22,16 @@ $mvb_kinds         = mvb_get_used_pick_kinds( $mvb_all_preorders );
   <div class="wrap">
     <p class="eyebrow">Coming soon</p>
     <h1>Worth the <i>wait</i>.</h1>
-    <p>Books we're looking forward to that aren't on the shelf yet. The corner of each card says when it's due — pre-order and we'll put one aside for you the day it lands.</p>
+    <?php
+    // Staff can reword this intro from the page's own content box in
+    // wp-admin; the copy below shows while that box is left empty.
+    the_post();
+    if ( mvb_has_visible_text( get_the_content() ) ) :
+      the_content();
+    else :
+      ?>
+      <p>Books we're looking forward to that aren't on the shelf yet. The corner of each card says when it's due — pre-order and we'll put one aside for you the day it lands.</p>
+    <?php endif; ?>
   </div>
 </section>
 
