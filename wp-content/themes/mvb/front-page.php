@@ -27,16 +27,24 @@ $mvb_upcoming       = mvb_get_upcoming_events( 3 );
 ?>
 
 <section class="hero">
-  <svg class="bird hero-bird" aria-hidden="true"><use href="#bird"/></svg>
-  <div class="wrap">
-    <p class="eyebrow">Matakana Village · Under the cinema</p>
-    <h1>Find it, <i>read it,</i></br>love it.</h1>
-    <p class="lede">A small bookshop beside the Farmers Market, where every book on the shelf was chosen with care.</p>
-    <div class="actions">
-      <a class="btn btn-solid" href="<?php echo esc_url( home_url( '/bookshelf/' ) ); ?>">See the bookshelf</a>
-      <a class="btn" href="<?php echo esc_url( home_url( '/#find' ) ); ?>">Plan a visit</a>
-      <a class="btn" href="https://shop.matakanavillagebooks.co.nz">Online shop</a>
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Matakana Village · Under the cinema</p>
+      <h1>Find it, <i>read it,</i></br>love it.</h1>
+      <p class="lede">A small bookshop beside the Farmers Market, where every book on the shelf was chosen with care.</p>
+      <div class="actions">
+        <a class="btn" href="<?php echo esc_url( home_url( '/bookshelf/' ) ); ?>">See our staff picks</a>
+        <a class="btn" href="<?php echo esc_url( home_url( '/#find' ) ); ?>">Plan a visit</a>
+      </div>
     </div>
+    <aside class="shop-card" aria-labelledby="shop-card-title">
+      <?php // The viewBox trims the symbol to the bird itself, so its feet sit on the card's top edge. ?>
+      <svg class="bird shop-card-bird" viewBox="9 8 374 391" aria-hidden="true"><use href="#bird" width="390" height="399"/></svg>
+      <p class="eyebrow">Can't make it in?</p>
+      <h2 id="shop-card-title">Shop <i>online</i></h2>
+      <p>The whole shop, a click away. We ship anywhere in New Zealand.</p>
+      <a class="btn btn-solid" href="https://shop.matakanavillagebooks.co.nz">Visit the online shop</a>
+    </aside>
   </div>
 </section>
 
